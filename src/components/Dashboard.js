@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button';
 import {logout} from '../api-fetch/api-user.js';
 
+import User from './User.js';
 
 function Dashboard() {
     const [shownComponent, setShownComponent] = useState({component_name:"planner"});
@@ -26,9 +27,7 @@ function Dashboard() {
     </Card>);
     }
     else if (shownComponent.component_name === "user"){
-        component = (<Card color = "primary" variant = "outlined">
-        <Typography variant="h1">User</Typography>
-    </Card>);
+        component = <User/>;
     }
 
     return (

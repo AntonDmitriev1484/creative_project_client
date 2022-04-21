@@ -1,4 +1,5 @@
 //For all of these functions, we will just pass in the object literal which we'll send to the server
+let USERNAME_COOKIE; //Having troubles, for some reason this variable isnt updating
 
 function create_user(param) {
     return server_fetch("/register", "POST", param)
@@ -21,11 +22,16 @@ function create_user(param) {
 function login(param) { //Stores username in a cookie/global variable
 
     return server_fetch("/auth", "POST", param)
-    .then(res=>res.json(), (error)=>console.error("Error",error))
+    .then(response=>response.json())
     .then((response)=>{
+        console.log(response.status); //Apparently response.status is only available at the error block, not in here https://github.com/2muchcoffeecom/ngx-restangular/issues/98
+        //Maybe just send a boolean in the body of the request????
+        //Thats why its never making it in here and setting and cookie values. Which in turn, is why my user get request isn't working.
         if (response.status === 200){
             console.log("Login success");
-            document.cookie = "username= "+param.username+";";
+            document.cookie = "username= "+param.username+";"; //Document.cookie not working, for now we'll store it as a global variable
+            USERNAME_COOKIE = param.username;
+            console.log(USERNAME_COOKIE+" from login")
         }
         else{
             console.log(response.message);
@@ -100,6 +106,7 @@ function delete_course(param) {
 //User-info fetch
 
 function user_info(param) {
+    console.log("user_info() "+get_username());
     return generic_fetch("/user/"+get_username(),"GET", param);
 }
 
@@ -136,12 +143,14 @@ async function generic_fetch(endpoint, method, data) {
     server_fetch(endpoint, method, data)
     .then(res=>res.json())
     .then((response)=>{
-        if (response.success){
-           return JSON.parse(response);
+        if (response.status === 200){
+            console.log("Logout success");
         }
         else{
-            console.log(response.description);
+            console.log(response.message);
         }
+        console.log(JSON.stringify(response));
+        return response;
 
     })
     .catch((error)=>console.error("Error",error));
@@ -177,12 +186,14 @@ function get_username() {
     let cookieValue = document.cookie.split('; ').find(row => row.startsWith('username='));
     //end of code citation
 
-    if (cookieValue !== undefined){
-        return cookieValue.split('=')[1];
-    }
-    else {
-        return null;
-    }
+    // if (cookieValue !== undefined){
+    //     return cookieValue.split('=')[1];
+    // }
+    // else {
+    //     return null;
+    // }
+
+    return USERNAME_COOKIE;
 }
 
 export {
