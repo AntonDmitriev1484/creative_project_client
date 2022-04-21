@@ -40,17 +40,21 @@ function login(param) { //Stores username in a cookie/global variable
 
 
 
-function logout(param) { //Stores username in a cookie/global variable
+function logout(param) { 
     server_fetch("/user/"+get_username()+"/logout", "GET", param)
     .then(res=>res.json())
     .then((response)=>{
-        if (response.success){
-            document.cookie = "username= ;";
-           return JSON.parse(response);
+        if (response.status === 200){
+            console.log("Logout success");
+            
+            //Note this still needs to scrub the cookie from the browser
         }
         else{
-            console.log(response.description);
+            console.log(response.message);
         }
+        
+        console.log(JSON.stringify(response)+" api-user");
+        return response;
 
     })
     .catch((error)=>console.error("Error",error));
@@ -146,10 +150,19 @@ async function generic_fetch(endpoint, method, data) {
 
 function server_fetch(endpoint, method, data, headers={"content-type": "application/json"}) {
     let url = "http://ec2-44-203-76-180.compute-1.amazonaws.com:3456"+endpoint;
-    let json = {'headers':headers,
-            'method':method,
-            'body':JSON.stringify(data)
-            };
+
+    let json;
+    if (method ==="GET") {
+        json = {'headers':headers,
+        'method':method
+        };
+    } else {
+        json = {'headers':headers,
+        'method':method,
+        'body':JSON.stringify(data)
+        };
+    }
+
 
     console.log("Sent json: ");
     console.log(json);

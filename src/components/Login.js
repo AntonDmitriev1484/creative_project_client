@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 
 
 import Card from '@mui/material/Card'
@@ -12,6 +13,7 @@ import {login} from '../api-fetch/api-user.js'
 function Login(props) {
 
     const [info, setInfo] = useState({username:"", password:""});
+    const redirect = useNavigate(); //This is also a react hook
 
     return (
         <Card color = "secondary" variant = "outlined">
@@ -39,6 +41,7 @@ function Login(props) {
                             color="secondary" variant="contained"
                             onClick= {  async () => {
                                
+                                redirect("/dash/"); //Change this redirect to only work on successful entry, maybe pass it to the api-user function
                                 let response = await login(info);
                                 console.log(response);
                                 }
