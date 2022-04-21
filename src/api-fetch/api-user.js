@@ -24,38 +24,38 @@ function logout(param, on_success) {
 //Events fetch
 
 function add_event(param, on_success) {
-    return generic_fetch("/user/"+get_username()+"/event","POST", param, on_success);
+    return generic_fetch("/user/"+get_username()+"/events","POST", param, on_success);
 }
 
 function unresolved_events(param, on_success) {
-    return generic_fetch("/user/"+get_username()+"/event","GET", param, on_success);
+    return generic_fetch("/user/"+get_username()+"/events","GET", param, on_success);
 }
 
 function update_event(param, on_success) {
-    return generic_fetch("/user/"+get_username()+"/event","PUT", param, on_success);
+    return generic_fetch("/user/"+get_username()+"/events","PUT", param, on_success);
 }
 
 function delete_event(param, on_success) {
-    return generic_fetch("/user/"+get_username()+"/event","DELETE", param, on_success);
+    return generic_fetch("/user/"+get_username()+"/events","DELETE", param, on_success);
 }
 
 
 //Courses fetch
 
 function add_course(param, on_success) {
-    return generic_fetch("/user/"+get_username()+"/course","POST", param, on_success);
+    return generic_fetch("/user/"+get_username()+"/courses","POST", param, on_success);
 }
 
 function current_courses(param, on_success) {
-    return generic_fetch("/user/"+get_username()+"/event","GET", param, on_success);
+    return generic_fetch("/user/"+get_username()+"/courses","GET", param, on_success);
 }
 
 function update_course(param, on_success) {
-    return generic_fetch("/user/"+get_username()+"/event","PUT", param, on_success);
+    return generic_fetch("/user/"+get_username()+"/courses","PUT", param, on_success);
 }
 
 function delete_course(param, on_success) {
-    return generic_fetch("/user/"+get_username()+"/event","DELETE", param, on_success);
+    return generic_fetch("/user/"+get_username()+"/courses","DELETE", param, on_success);
 }
 
 //User-info fetch
@@ -149,7 +149,6 @@ function get_username() {
         return null;
     }
 
-    //return USERNAME_COOKIE;
 }
 
 function clear_username() {

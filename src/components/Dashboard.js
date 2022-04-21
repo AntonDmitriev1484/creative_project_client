@@ -16,6 +16,7 @@ import {logout, clear_username} from '../api-fetch/api-user.js';
 
 
 import User from './User.js';
+import Planner from './Planner.js';
 
 function Dashboard() {
     const [shownComponent, setShownComponent] = useState({component_name:"planner"});
@@ -23,9 +24,7 @@ function Dashboard() {
 
     let component;
     if (shownComponent.component_name === "planner"){
-        component = (<Card color = "primary" variant = "outlined">
-        <Typography variant="h1">Planner</Typography>
-    </Card>);
+        component = <Planner/>
     }
     else if (shownComponent.component_name === "user"){
         component = <User/>;
