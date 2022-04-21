@@ -61,6 +61,7 @@ function delete_course(param, on_success) {
 //User-info fetch
 
 function user_info(param, on_success) {
+    console.log(get_username());
     return generic_fetch("/user/"+get_username(),"GET", param, on_success);
 }
 
@@ -151,11 +152,17 @@ function get_username() {
     //return USERNAME_COOKIE;
 }
 
+function clear_username() {
+    //Clears username cookie
+    document.cookie = "username=;";
+
+}
+
 export {
     create_user, login, logout, 
     add_event, delete_event, update_event, unresolved_events,
     add_course, delete_course, update_course, current_courses,
     user_info, update_userinfo, delete_user,
     define_university, university_courselist,
-    get_username
+    get_username, clear_username
 }

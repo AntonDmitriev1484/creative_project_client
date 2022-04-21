@@ -40,10 +40,14 @@ function Login(props) {
                         <Button 
                             color="secondary" variant="contained"
                             onClick= { () => {
+
+                                const user = info.username;
                                
                                 const on_success = (a) => {
                                     console.log("In login success");
-                                    document.cookie = "username= "+a.username+";"; console.log('redirecting');
+                                    console.log(user);
+                                    document.cookie = "username= "+user+";"; //Because we still have access to this scope's info 
+                                    console.log('redirecting');
                                     redirect("/dash/"); //Change this redirect to only work on successful entry, maybe pass it to the api-user function
                                 }
                                

@@ -12,7 +12,8 @@ import Tabs from '@mui/material/Tabs'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button';
-import {logout} from '../api-fetch/api-user.js';
+import {logout, clear_username} from '../api-fetch/api-user.js';
+
 
 import User from './User.js';
 
@@ -55,6 +56,7 @@ function Dashboard() {
 
                                 const on_success = (a) => {
                                     console.log("Logout success");
+                                    clear_username();
                                     redirect("/");
                                     console.log('You have been redirected')
                                 }
