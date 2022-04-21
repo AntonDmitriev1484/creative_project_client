@@ -41,10 +41,13 @@ function Login(props) {
                             color="secondary" variant="contained"
                             onClick= { () => {
                                
-                                redirect("/dash/"); //Change this redirect to only work on successful entry, maybe pass it to the api-user function
-                                console.log('redirecting');
-                                let response = login(info);
-                                console.log('response '+response);
+                                const on_success = (a) => {
+                                    console.log("In login success");
+                                    document.cookie = "username= "+a.username+";"; console.log('redirecting');
+                                    redirect("/dash/"); //Change this redirect to only work on successful entry, maybe pass it to the api-user function
+                                }
+                               
+                                login(info, on_success);
                                 }
                             } >Enter</Button>
 

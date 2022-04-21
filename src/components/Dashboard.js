@@ -51,10 +51,15 @@ function Dashboard() {
                         } >Planner</Button>
                         <Button 
                             color="secondary" variant="contained"
-                            onClick= {  async () => {
-                                let response = await logout("");
-                                console.log(response);
-                                redirect("/");
+                            onClick= {  () => {
+
+                                const on_success = (a) => {
+                                    console.log("Logout success");
+                                    redirect("/");
+                                    console.log('You have been redirected')
+                                }
+                                logout("",on_success);
+
                                 }
                         } >Log out</Button>
                 </Card>

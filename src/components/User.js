@@ -14,13 +14,6 @@ function User(props) {
 
     const [userInfo, setUserInfo] = useState({username:"",email:""});
 
-    // const on_success = (a) => {
-    //     function f  (a)  {setUserInfo(a)};
-
-    //     useEffect( f(a), []);
-
-    // }
-
 
     useEffect( () => {
 
@@ -34,13 +27,13 @@ function User(props) {
          //.thens() pass function parameters to be executed within
          //async/await, rely on getting a return value
 
-         
+
         // const info = user_info("");
         // setUserInfo(info);
 
         // use();
         // function use () {
-        //     const a = user_info("");
+        //     const a = user_info("", ()=> {});
         //     setUserInfo({username:a.user_info.username,email:a.user_info.email});
             
         // }

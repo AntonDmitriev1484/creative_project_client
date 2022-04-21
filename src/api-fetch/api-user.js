@@ -4,169 +4,102 @@
 //Basically, you're currently writing your error statuses incorrectly. Anything that causes a not-success should go into error immediatley.
 //For now, give a success boolean in the request body and we'll use that.
 
-function create_user(param) {
-    return server_fetch("/register", "POST", param)
-    .then(res=>res.json())
-    .then((response)=>{
+function create_user(param, on_success) {
 
-        if (response.status === 200){
-            console.log("User creation success");
-        }
-        else{
-            console.log(response.message);
-        }
-        
-        console.log(JSON.stringify(response)+" api-user");
-        return response;
-
-    })
-    .catch((error)=>console.error("Error",error));
+    return generic_fetch("/register","POST", param, on_success);
 }
 
-function login(param) { //Stores username in a cookie/global variable
+function login(param, on_success) { //Stores username in a cookie/global variable
 
-    return server_fetch("/auth", "POST", param)
-    .then(response=>response.json())
-    .then((response)=>{
-        //console.log(response.status); //Apparently response.status is only available at the error block, not in here https://github.com/2muchcoffeecom/ngx-restangular/issues/98
-        //Maybe just send a boolean in the body of the request????
-        //Thats why its never making it in here and setting and cookie values. Which in turn, is why my user get request isn't working.
-        if (response.success){
-            console.log("IN Login success");
-            document.cookie = "username= "+param.username+";"; //Document.cookie not working, for now we'll store it as a global variable
-            // USERNAME_COOKIE = param.username;
-            // console.log(USERNAME_COOKIE+" from login")
-        }
-        else{
-            console.log(response.message);
-        }
-        
-        console.log(JSON.stringify(response)+" api-user");
-        return response;
+    return generic_fetch("/auth","POST", param, on_success);
 
-    })
-    .catch((error)=>console.error("Error",error));
 }
 
 
+function logout(param, on_success) { 
+    return generic_fetch("/user/"+get_username()+"/logout","GET", param, on_success);
 
-function logout(param) { 
-    server_fetch("/user/"+get_username()+"/logout", "GET", param)
-    .then(res=>res.json())
-    .then((response)=>{
-        if (response.success){
-            console.log("Logout success");
-            
-            //Note this still needs to scrub the cookie from the browser
-        }
-        else{
-            console.log(response.message);
-        }
-        
-        console.log(JSON.stringify(response)+" api-user");
-        return response;
-
-    })
-    .catch((error)=>console.error("Error",error));
 }
 
 //Events fetch
 
-function add_event(param) {
-    return generic_fetch("/user/"+get_username()+"/event","POST", param);
+function add_event(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/event","POST", param, on_success);
 }
 
-function unresolved_events(param) {
-    return generic_fetch("/user/"+get_username()+"/event","GET", param);
+function unresolved_events(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/event","GET", param, on_success);
 }
 
-function update_event(param) {
-    return generic_fetch("/user/"+get_username()+"/event","PUT", param);
+function update_event(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/event","PUT", param, on_success);
 }
 
-function delete_event(param) {
-    return generic_fetch("/user/"+get_username()+"/event","DELETE", param);
+function delete_event(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/event","DELETE", param, on_success);
 }
 
 
 //Courses fetch
 
-function add_course(param) {
-    return generic_fetch("/user/"+get_username()+"/course","POST", param);
+function add_course(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/course","POST", param, on_success);
 }
 
-function current_courses(param) {
-    return generic_fetch("/user/"+get_username()+"/event","GET", param);
+function current_courses(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/event","GET", param, on_success);
 }
 
-function update_course(param) {
-    return generic_fetch("/user/"+get_username()+"/event","PUT", param);
+function update_course(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/event","PUT", param, on_success);
 }
 
-function delete_course(param) {
-    return generic_fetch("/user/"+get_username()+"/event","DELETE", param);
+function delete_course(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/event","DELETE", param, on_success);
 }
 
 //User-info fetch
 
-function user_info(param, f) {
-
-    server_fetch("/user/"+get_username(), "GET", param)
-    .then(res=>res.json())
-    .then((response)=>{
-        if (response.success){
-            console.log("Fetch success");
-            f(response);
-        }
-        else{
-            console.log(response.message);
-        }
-        console.log(JSON.stringify(response));
-        return response;
-
-    })
-    .catch((error)=>console.error("Error",error));
-
-
-    //console.log("user_info() "+get_username());
-    //return await generic_fetch("/user/"+get_username(),"GET", param);
+function user_info(param, on_success) {
+    return generic_fetch("/user/"+get_username(),"GET", param, on_success);
 }
 
-function update_userinfo(param) {
-    return generic_fetch("/user/"+get_username(),"PUT", param);
+function update_userinfo(param, on_success) {
+    return generic_fetch("/user/"+get_username(),"PUT", param, on_success);
 }
 
-function delete_user(param) {
-    return generic_fetch("/user/"+get_username(),"DELETE", param);
+function delete_user(param, on_success) {
+    return generic_fetch("/user/"+get_username(),"DELETE", param, on_success);
 }
 
 
 //Adding a university
 
-function define_university(param){
-    return generic_fetch("/university","POST", param);
+function define_university(param, on_success){
+    return generic_fetch("/university","POST", param, on_success);
 }
 
 //University courselist
 
-function university_courselist(param) {
+function university_courselist(param, on_success) {
     //NOTE: param will be the university name
-    return generic_fetch("/university/"+param+"/courselist","GET", param);
+    return generic_fetch("/university/"+param+"/courselist","GET", param, on_success);
 }
 
 //Really no need to have access to this from the frontend
-// function add_to_university_courselist(param) {
+// function add_to_university_courselist(param, on_success) {
 //     //NOTE: param will be the university name
-//     return generic_fetch("/university/"+param+"/courselist","GET", param);
+//     return generic_fetch("/university/"+param+"/courselist","GET", param, on_success);
 // }
 
 //Generic fetch gets a promise from server_fetch() and the .then .catch chaining acts as blocking which resolves the promise
-async function generic_fetch(endpoint, method, data) {
+function generic_fetch(endpoint, method, data, f) {
     server_fetch(endpoint, method, data)
     .then(res=>res.json())
     .then((response)=>{
         if (response.success){
             console.log("Fetch success");
+            f(response); //Running the on_success function which gets passed in
         }
         else{
             console.log(response.message);

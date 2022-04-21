@@ -54,10 +54,17 @@ function Register(props) {
 
                         <Button 
                             color="secondary" variant="contained"
-                            onClick= {  async () => {
-                                let response = await create_user(info);
-                                console.log(response);
+                            onClick= { () => {
+
+                                const on_success = (a) => {
+                                    console.log("User creation success");
                                 }
+                                
+                                //console.log('before create user');
+                                create_user(info,on_success); //Order in which these print ultimatley doesn't matter, 
+                                //because the functionality which we need to be blocking, is synchronous
+                                //console.log('after create user');
+                            }
                             } >Submit</Button>
 
                     </Card>
