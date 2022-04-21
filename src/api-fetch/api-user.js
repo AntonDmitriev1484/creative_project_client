@@ -1,15 +1,18 @@
 //For all of these functions, we will just pass in the object literal which we'll send to the server
 
 function create_user(param) {
-    server_fetch("/register", "POST", param)
+    return server_fetch("/register", "POST", param)
     .then(res=>res.json())
     .then((response)=>{
-        if (response.success){
-           return JSON.parse(response);
+        if (response.status === 200){
+            console.log("User creation success");
         }
         else{
-            console.log(response.description);
+            console.log(response.message);
         }
+        
+        console.log(JSON.stringify(response)+" api-user");
+        return response;
 
     })
     .catch((error)=>console.error("Error",error));

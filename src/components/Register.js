@@ -11,7 +11,6 @@ import {create_user} from '../api-fetch/api-user.js'
 
 function Register(props) {
 
-    console.log('unique');
     const [info, setInfo] = useState({username:"", password:"", email:""});
 
     return (
