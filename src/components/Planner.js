@@ -62,7 +62,7 @@ function Planner () {
     const rows = unresolvedEvents.events.map((event) => ({
         id: event._id,
         description: event.description,
-        course_code: event.dept_code+event.course_code,
+        course_code: event.course.course.dept_code+""+event.course.course.course_code,
     }));
 
     //Need some way to convert each event into a EventRow component
@@ -74,12 +74,13 @@ function Planner () {
     let row_component_array = [];
 
     
-
+    console.log(rows);
+    console.log(cols);
     // return (<div> <Typography variant="h1">User</Typography>
     // <Typography variant="h4">Events: {unresolvedEvents.events.toString()}</Typography></div>);
 
-    return (<div> <Typography variant="h1">User</Typography>
-    <DataGrid rows = {rows} columns = {cols}></DataGrid>
+    return (<div> <Typography variant="h1">Planner</Typography>
+    <DataGrid rows = {rows} columns = {cols} autoHeight = {true}></DataGrid>
     <Typography variant="h4">Events: {unresolvedEvents.events.toString()}</Typography></div>);
 }
 
