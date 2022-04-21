@@ -39,11 +39,12 @@ function Login(props) {
 
                         <Button 
                             color="secondary" variant="contained"
-                            onClick= {  async () => {
+                            onClick= { () => {
                                
                                 redirect("/dash/"); //Change this redirect to only work on successful entry, maybe pass it to the api-user function
-                                let response = await login(info);
-                                console.log(response);
+                                console.log('redirecting');
+                                let response = login(info);
+                                console.log('response '+response);
                                 }
                             } >Enter</Button>
 

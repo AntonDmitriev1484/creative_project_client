@@ -10,17 +10,45 @@ import Button from '@mui/material/Button';
 
 import {user_info} from '../api-fetch/api-user.js'
 
-function User() {
+function User(props) {
 
-    const [userInfo, setUserInfo] = useState({});
+    const [userInfo, setUserInfo] = useState({username:"",email:""});
+
+    // const on_success = (a) => {
+    //     function f  (a)  {setUserInfo(a)};
+
+    //     useEffect( f(a), []);
+
+    // }
+
 
     useEffect( () => {
-        use();
-        async function use () {
-            const info = await user_info("");
-            setUserInfo(info);
+
+        const on_success = (a) => {
+            setUserInfo({username:a.user_info.username,email:a.user_info.email});
         }
-    });
+
+         user_info("", on_success);
+
+         //NEW RULE:
+         //.thens() pass function parameters to be executed within
+         //async/await, rely on getting a return value
+
+         
+        // const info = user_info("");
+        // setUserInfo(info);
+
+        // use();
+        // function use () {
+        //     const a = user_info("");
+        //     setUserInfo({username:a.user_info.username,email:a.user_info.email});
+            
+        // }
+    }, []);
+
+    //user_info("", useEffect( (a) => {setUserInfo(a)}, []))
+
+    console.log("User: "+userInfo.username+" "+userInfo.email);
 
 
     return (<Card color = "primary" variant = "outlined">
