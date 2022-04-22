@@ -81,13 +81,13 @@ function AddHomework() {
 
                                 const user = info.username;
                                
-                                const on_success = (a) => {
-                                    console.log("In login success");
-                                    console.log(user);
-                                    document.cookie = "username= "+user+";"; //Because we still have access to this scope's info 
-                                    console.log('redirecting');
-                                    //redirect("/dash/"); //Change this redirect to only work on successful entry, maybe pass it to the api-user function
-                                }
+                                // const on_success = (a) => {
+                                //     console.log("In login success");
+                                //     console.log(user);
+                                //     document.cookie = "username= "+user+";"; //Because we still have access to this scope's info 
+                                //     console.log('redirecting');
+                                //     //redirect("/dash/"); //Change this redirect to only work on successful entry, maybe pass it to the api-user function
+                                // }
                                
                                 // login(info, on_success);
                                 }

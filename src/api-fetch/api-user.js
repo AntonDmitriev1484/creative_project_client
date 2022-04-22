@@ -61,7 +61,6 @@ function delete_course(param, on_success) {
 //User-info fetch
 
 function user_info(param, on_success) {
-    console.log(get_username());
     return generic_fetch("/user/"+get_username(),"GET", param, on_success);
 }
 
@@ -129,8 +128,8 @@ function server_fetch(endpoint, method, data, headers={"content-type": "applicat
     }
 
 
-    console.log("Sent json: ");
-    console.log(json);
+    // console.log("Sent json: ");
+    // console.log(json);
     return  fetch(url, json);
     //Returns the fetch() promise, each method which calls this can determine how they want to resolve this promise
 }

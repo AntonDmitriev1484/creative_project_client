@@ -95,26 +95,21 @@ function Planner () {
             <GridActionsCellItem  icon={<DeleteIcon/>} label="Delete" showInMenu
             onClick = {
                 () => {
-                    console.log(unresolvedEvents.events[params.row.index]);
                     //When creating rows, we give each row an index which 1:1 corresponds to an event
                     //in the unresolvedEvents state object
                     //So, we can use this index to obtain the full event from our state
                     //then we can use this event in our request to the backend
 
                     const on_success = (a) => {
-                        console.log("event successfully deleted");
                         //Since backend delete just returns the message
                         //We need to manualy remove this event from our react component state
 
-
                         let newUnresolvedEvents = [...unresolvedEvents.events]; // shallow copy
-                        console.log(newUnresolvedEvents);
                         newUnresolvedEvents?.splice(params.row.index,1);
                         setUnresolvedEvents({events:newUnresolvedEvents});
                     }
                     //delete_unresolved_event on the backend really just needs an _id
 
-                    console.log(unresolvedEvents.events[params.row.index]._id);
                     const target = {_id: unresolvedEvents.events[params.row.index]._id}
                     delete_event(target, on_success);
 
