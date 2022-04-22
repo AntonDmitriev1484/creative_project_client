@@ -8,6 +8,7 @@ import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
 
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
@@ -30,7 +31,7 @@ import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'; //Actually wan
 // "date_time_assigned":"2022-04-13T02:28:15.108Z",
 // "date_time_due":"2022-04-13T02:28:15.108Z",
 // "progress":0,
-//"description":"Test homework add ARC",
+// "description":"Test homework add ARC",
 // "note":"I hate JS",
 // "course":{
 //     "course":{"name":"Rapid Prototype Development",
@@ -58,6 +59,20 @@ function Planner () {
 
         const on_success_events = (a) => {
             console.log(a);
+            a.events?.push({ //pushes back a blank event
+                "new":true, //New "flag" is set to true
+                "_id":"0", //BE CAREFUL ABOUT THIS IT MIGHT CAUSE BUGS WHEN SENT TO DB
+                "date_time_due":"",
+                "progress":0,
+                "description":"",
+                "note":"",
+                "course":{
+                    "course":{
+                        "dept_code":"",
+                        "course_code":""
+                    },
+                }
+            }); //Pushes an extra item back into the array, this will be our way to add new events
             setUnresolvedEvents({events:a.events});
         }
 
@@ -115,14 +130,27 @@ function Planner () {
 
                 }
             }/>,
-            <GridActionsCellItem  icon={<SaveIcon/>}  label="Update" showInMenu 
+            (params.row.new ? //If this row has the new flag set to true, we'll render a save button instead of an update button
+            <GridActionsCellItem  icon={<SaveIcon/>}  label="Create" showInMenu 
             onClick = {
                 () => {
+                    console.log('in save');
                     //Something like
                     //setUnresolvedEvents({params.row.progress.value, params.row.note.value ...}) @ params.row.index
                     console.log(unresolvedEvents.events[params.row.index]);
                     }
-            }/>,
+            }/> 
+            : 
+            <GridActionsCellItem  icon={<EditIcon/>}  label="Update" showInMenu 
+            onClick = {
+                () => {
+                    console.log('in update');
+                    //Something like
+                    //setUnresolvedEvents({params.row.progress.value, params.row.note.value ...}) @ params.row.index
+                    console.log(unresolvedEvents.events[params.row.index]);
+                    }
+            }/> )
+            ,
           ]
         
         
@@ -137,14 +165,31 @@ function Planner () {
     //Says: if unresolvedEvents.events exists, then run forEach
     unresolvedEvents.events?.forEach((event, index) => {
                 //console.log(index);
-                rows.push( {
-                index: index,
-                id: event._id,
-                description: event.description,
-                course_code: event.course.course.dept_code+""+event.course.course.course_code,
-                progress: event.progress,
-                date_due: event.date_time_due,
-                note: event.note})
+
+                console.log(event.course);
+
+                if (!event.new){
+                    rows.push( {
+                        new : false,
+                        index: index,
+                        id: event._id,
+                        description: event.description,
+                        course_code: event.course.course.dept_code+""+event.course.course.course_code,
+                        progress: event.progress,
+                        date_due: event.date_time_due,
+                        note: event.note})
+                }
+                else {
+                    rows.push( {
+                        new: true,
+                        index: index,
+                        id: event._id,
+                        description: event.description,
+                        course_code: event.course.course.dept_code+""+event.course.course.course_code,
+                        progress: event.progress,
+                        date_due: event.date_time_due,
+                        note: event.note})
+                }
             }
         );
 
