@@ -52,7 +52,8 @@ function Planner () {
     const [courses, setCourses] = useState({});
 
     const convert_courses_to_str = () => {
-        return courses.map((course)=>(course.course.dept_code+course.course.course_code))
+        //return courses.map((course)=>(course.course.dept_code+course.course.course_code))
+        return courses.map((course)=>(course.course.course_code))
     }
 
     
@@ -99,7 +100,7 @@ function Planner () {
         valueOptions:convert_courses_to_str},
 
         {field: "progress", headerName: "Progress", width: "200", editable: true},
-        {field: "date_due", headerName: "Due", width: "100", editable: true},
+        {field: "date_due", headerName: "Due", width: "100", editable: true}, //Note can set type:date https://mui.com/x/react-data-grid/columns/
         {field: "note", headerName: "Note", width: "350", editable: true},
 
         {field: "actions", 
@@ -171,9 +172,38 @@ function Planner () {
 
                     }
 
-                    let event = params.row;
-                    delete event._id; //Want to remove the _id field before sending just to make sure it doesn't mess with mongo
-                    delete event.new; //Want to remove new field as it doesn't really matter anymore
+                    let row_info = params.row;
+
+                    let event = {
+                        "date_time_created":"",
+                        "date_time_assigned":"",
+                        "date_time_due":row_info.date_due,
+                        "progress":row_info.progress,
+                        "description":row_info.description,
+                        "note":row_info.note,
+                        "course":{
+                            
+                        }
+                    }
+
+                    //WARNING: DISGUSTINGLY BAD CODE
+
+                    //There's definitley a better way to do this,
+                    //for now, this method will linear search through the courses state
+                    //until it finds a course_code in a course object which matches the one
+                    //that we get as a string from the singleSelect
+
+
+                    console.log(row_info.course_code);
+                    courses.forEach( (course) => {
+                        console.log('state course code '+course.course.course_code+' singleSelect course code '+params.row.course_code);
+                        if (course.course.course_code === row_info.course_code){
+                            
+                            event.course = course;
+                        }
+                    })
+
+
 
                     event.date_time_created = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
                     //Cited from: https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
@@ -181,15 +211,19 @@ function Planner () {
 
                     //Adding date time created and assigned properties
 
+                    console.log(event);
 
                     add_event(event, on_success)
-                    console.log(unresolvedEvents.events[params.row.index]);
+                    //console.log(unresolvedEvents.events[params.row.index]);
                     }
             }/> 
             : 
             <GridActionsCellItem  icon={<EditIcon/>}  label="Update" showInMenu 
             onClick = {
                 () => {
+
+
+
                     console.log('in update');
                     //Something like
                     //setUnresolvedEvents({params.row.progress.value, params.row.note.value ...}) @ params.row.index

@@ -128,8 +128,8 @@ function server_fetch(endpoint, method, data, headers={"content-type": "applicat
     }
 
 
-    // console.log("Sent json: ");
-    // console.log(json);
+    console.log("Sent json: ");
+    console.log(json);
     return  fetch(url, json);
     //Returns the fetch() promise, each method which calls this can determine how they want to resolve this promise
 }
