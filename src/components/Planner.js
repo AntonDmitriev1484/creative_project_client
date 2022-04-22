@@ -11,8 +11,9 @@ import Tabs from '@mui/material/Tabs'
 //import TabPanel from '@mui/material/TabPanel'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button';
-import {unresolved_events} from '../api-fetch/api-user.js';
+import Button from '@mui/material/Button'
+import AddHomework from './AddHomework.js'
+import {unresolved_events} from '../api-fetch/api-user.js'
 
 
 import { DataGrid } from '@mui/x-data-grid'; //Actually want to use this instead of a normal table
@@ -54,8 +55,12 @@ function Planner () {
     }, []);
 
     const cols =[ //Defining the data grid's columns
-        {field: "description", headerName: "Assignment", width: "100"},
+        {field: "description", headerName: "Assignment", width: "350"},
         {field: "course_code", headerName: "Course", width: "100"},
+        {field: "progress", headerName: "Progress", width: "200"},
+        {field: "date_due", headerName: "Due", width: "100"},
+        {field: "note", headerName: "Note", width: "350"}
+
 
     ];
 
@@ -63,13 +68,16 @@ function Planner () {
         id: event._id,
         description: event.description,
         course_code: event.course.course.dept_code+""+event.course.course.course_code,
+        progress: event.progress,
+        date_due: event.date_time_due,
+        note: event.note
+
     }));
 
-    //Need some way to convert each event into a EventRow component
-    //props???
+    //Might edit events through a pop-up window, include an edit button in each row
+    //Might delete events through a delete button in each row
 
-    //nest that in one component
-    //then render it in the bod
+    //Most pressing concern is figuring out how to include full course information on each element of course_selector and then access that.
 
     let row_component_array = [];
 
@@ -80,8 +88,15 @@ function Planner () {
     // <Typography variant="h4">Events: {unresolvedEvents.events.toString()}</Typography></div>);
 
     return (<div> <Typography variant="h1">Planner</Typography>
-    <DataGrid rows = {rows} columns = {cols} autoHeight = {true}></DataGrid>
-    <Typography variant="h4">Events: {unresolvedEvents.events.toString()}</Typography></div>);
+                <DataGrid 
+                    rows = {rows} 
+                    columns = {cols} 
+                    autoHeight = {true}
+                    />
+                <Card color = "primary" variant = "outlined">
+                    <AddHomework/>
+                </Card>
+            </div>);
 }
 
 export default Planner;
