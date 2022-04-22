@@ -19,7 +19,7 @@ import Button from '@mui/material/Button'
 import AddHomework from './AddHomework.js'
 import CourseSelector from './CourseSelector.js'
 import {unresolved_events, current_courses, 
-    delete_event, add_event} from '../api-fetch/api-user.js'
+    delete_event, add_event, update_event} from '../api-fetch/api-user.js'
 
 
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'; //Actually want to use this instead of a normal table
@@ -136,11 +136,6 @@ function Planner () {
             <GridActionsCellItem  icon={<SaveIcon/>}  label="Create" showInMenu 
             onClick = {
                 () => {
-                    console.log('in save');
-                    console.log(params.row.index);
-                    //Something like
-                    //setUnresolvedEvents({params.row.progress.value, params.row.note.value ...}) @ params.row.index
-                    
                     //Need to update state for the frontend
 
                     //And send a request to add event to the backend
@@ -193,8 +188,82 @@ function Planner () {
                     //until it finds a course_code in a course object which matches the one
                     //that we get as a string from the singleSelect
 
+                    courses.forEach( (course) => {
+                        console.log('state course code '+course.course.course_code+' singleSelect course code '+params.row.course_code);
+                        if (course.course.course_code === row_info.course_code){
+                            
+                            event.course = course;
+                        }
+                    })
 
-                    console.log(row_info.course_code);
+
+
+                    event.date_time_created = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+                    //Cited from: https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
+                    event.date_time_assigned = event.date_time_created;
+
+                    //Adding date time created and assigned properties
+
+
+                    add_event(event, on_success)
+                    //console.log(unresolvedEvents.events[params.row.index]);
+                    }
+            }/> 
+            : 
+            <GridActionsCellItem  icon={<EditIcon/>}  label="Update" showInMenu 
+            onClick = {
+                () => {
+
+
+                    const on_success = () => {
+
+                        //If adding the event is successful, our planner will re-render by performing
+                        //another fetch request back to the server for unresolved events.
+
+                        const on_success_events = (a) => {
+                            a.events?.push({ //pushes back a blank event
+                                "new":true, //New "flag" is set to true
+                                "_id":"0", //BE CAREFUL ABOUT THIS IT MIGHT CAUSE BUGS WHEN SENT TO DB
+                                "date_time_due":"",
+                                "progress":0,
+                                "description":"",
+                                "note":"",
+                                "course":{
+                                    "course":{
+                                        "dept_code":"",
+                                        "course_code":""
+                                    },
+                                }
+                            }); //Pushes an extra item back into the array, this will be our way to add new events
+                            setUnresolvedEvents({events:a.events});
+                        }
+                
+                         unresolved_events("", on_success_events);
+
+                    }
+
+                    let row_info = params.row;
+
+                    let event = {
+                        "_id":row_info.id,
+                        "date_time_created":"",
+                        "date_time_assigned":"",
+                        "date_time_due":row_info.date_due,
+                        "progress":row_info.progress,
+                        "description":row_info.description,
+                        "note":row_info.note,
+                        "course":{
+                            
+                        }
+                    }
+
+                    //WARNING: DISGUSTINGLY BAD CODE
+
+                    //There's definitley a better way to do this,
+                    //for now, this method will linear search through the courses state
+                    //until it finds a course_code in a course object which matches the one
+                    //that we get as a string from the singleSelect
+
                     courses.forEach( (course) => {
                         console.log('state course code '+course.course.course_code+' singleSelect course code '+params.row.course_code);
                         if (course.course.course_code === row_info.course_code){
@@ -213,22 +282,12 @@ function Planner () {
 
                     console.log(event);
 
-                    add_event(event, on_success)
+                    //I THINK THIS IS FINE, API UPDATE EVENT METHOD IS RETURNING SUCCESS WITHOUT ACTUALLY UPDATING EVENT
+
+                    update_event(event, on_success);
                     //console.log(unresolvedEvents.events[params.row.index]);
                     }
-            }/> 
-            : 
-            <GridActionsCellItem  icon={<EditIcon/>}  label="Update" showInMenu 
-            onClick = {
-                () => {
-
-
-
-                    console.log('in update');
-                    //Something like
-                    //setUnresolvedEvents({params.row.progress.value, params.row.note.value ...}) @ params.row.index
-                    console.log(unresolvedEvents.events[params.row.index]);
-                    }
+                    
             }/> )
             ,
           ]
