@@ -107,9 +107,10 @@ function Planner () {
                         //We need to manualy remove this event from our react component state
 
 
-                        let newUnresolvedEvents = [...unresolvedEvents.events]; // deep copy
-                        unresolvedEvents.events.splice(params.row.index);
-                        setUnresolvedEvents(newUnresolvedEvents);
+                        let newUnresolvedEvents = [...unresolvedEvents.events]; // shallow copy
+                        console.log(newUnresolvedEvents);
+                        newUnresolvedEvents?.splice(params.row.index,1);
+                        setUnresolvedEvents({events:newUnresolvedEvents});
                     }
                     //delete_unresolved_event on the backend really just needs an _id
 
@@ -138,8 +139,9 @@ function Planner () {
 
 
     let rows = [];
-    unresolvedEvents.events.forEach((event, index) => {
-                console.log(index);
+    //Says: if unresolvedEvents.events exists, then run forEach
+    unresolvedEvents.events?.forEach((event, index) => {
+                //console.log(index);
                 rows.push( {
                 index: index,
                 id: event._id,
