@@ -18,7 +18,8 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import AddHomework from './AddHomework.js'
 import CourseSelector from './CourseSelector.js'
-import {unresolved_events, current_courses, delete_event} from '../api-fetch/api-user.js'
+import {unresolved_events, current_courses, 
+    delete_event, add_event} from '../api-fetch/api-user.js'
 
 
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'; //Actually want to use this instead of a normal table
@@ -135,8 +136,53 @@ function Planner () {
             onClick = {
                 () => {
                     console.log('in save');
+                    console.log(params.row.index);
                     //Something like
                     //setUnresolvedEvents({params.row.progress.value, params.row.note.value ...}) @ params.row.index
+                    
+                    //Need to update state for the frontend
+
+                    //And send a request to add event to the backend
+
+                    const on_success = () => {
+
+                        //If adding the event is successful, our planner will re-render by performing
+                        //another fetch request back to the server for unresolved events.
+
+                        const on_success_events = (a) => {
+                            a.events?.push({ //pushes back a blank event
+                                "new":true, //New "flag" is set to true
+                                "_id":"0", //BE CAREFUL ABOUT THIS IT MIGHT CAUSE BUGS WHEN SENT TO DB
+                                "date_time_due":"",
+                                "progress":0,
+                                "description":"",
+                                "note":"",
+                                "course":{
+                                    "course":{
+                                        "dept_code":"",
+                                        "course_code":""
+                                    },
+                                }
+                            }); //Pushes an extra item back into the array, this will be our way to add new events
+                            setUnresolvedEvents({events:a.events});
+                        }
+                
+                         unresolved_events("", on_success_events);
+
+                    }
+
+                    let event = params.row;
+                    delete event._id; //Want to remove the _id field before sending just to make sure it doesn't mess with mongo
+                    delete event.new; //Want to remove new field as it doesn't really matter anymore
+
+                    event.date_time_created = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+                    //Cited from: https://stackoverflow.com/questions/10645994/how-to-format-a-utc-date-as-a-yyyy-mm-dd-hhmmss-string-using-nodejs
+                    event.date_time_assigned = event.date_time_created;
+
+                    //Adding date time created and assigned properties
+
+
+                    add_event(event, on_success)
                     console.log(unresolvedEvents.events[params.row.index]);
                     }
             }/> 
