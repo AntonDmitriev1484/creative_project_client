@@ -56,6 +56,8 @@ function Planner () {
         return courses.map((course)=>(course.course.course_code))
     }
 
+    const component = <Button/>;
+
     
     useEffect( () => {
 
@@ -99,7 +101,7 @@ function Planner () {
           type:'singleSelect',
         valueOptions:convert_courses_to_str},
 
-        {field: "progress", headerName: "Progress", width: "200", editable: true},
+        {field: "progress", headerName: "Progress", width: "200", type:'slider', editable: true},
         {field: "date_due", headerName: "Due", width: "100", editable: true}, //Note can set type:date https://mui.com/x/react-data-grid/columns/
         {field: "note", headerName: "Note", width: "350", editable: true},
 
@@ -305,8 +307,6 @@ function Planner () {
     unresolvedEvents.events?.forEach((event, index) => {
                 //console.log(index);
 
-                console.log(event.course);
-
                 if (!event.new){
                     rows.push( {
                         new : false,
@@ -339,9 +339,7 @@ function Planner () {
 
     let row_component_array = [];
 
-    
-    console.log(rows);
-    console.log(cols);
+
     // return (<div> <Typography variant="h1">User</Typography>
     // <Typography variant="h4">Events: {unresolvedEvents.events.toString()}</Typography></div>);
 
