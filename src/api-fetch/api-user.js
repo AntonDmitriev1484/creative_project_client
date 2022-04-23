@@ -86,6 +86,12 @@ function university_courselist(param, on_success) {
     return generic_fetch("/university/"+param+"/courselist","GET", param, on_success);
 }
 
+function get_universities(param, on_success) {
+    //NOTE: WE AREN'T GOING TO USE THIS, INSTEAD I WILL HARDCODE ALL OF THE AVAIlABLE SCHOOL STRINGS INTO THE FRONTEND :)
+    //THERE IS NO API METHOD THAT ACTUALLY RETURNS ALL THE UNIVERSITIES AND I DONT HAVE TIME TO WRITE IT
+    return generic_fetch("/university","GET", param, on_success);
+}
+
 //Really no need to have access to this from the frontend
 // function add_to_university_courselist(param, on_success) {
 //     //NOTE: param will be the university name

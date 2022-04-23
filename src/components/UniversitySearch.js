@@ -15,20 +15,53 @@ import UniversityChip from './UniversityChip.js'
 
 function UniversitySearch() {
 
-    const [universities, setUniversities] = useState({});
+    const[all_universities, setAllUniversities] = useState({array:[
+        "Washington University in St. Louis", "Harvard University", "Purdue University", "University of Urbana Champaign in Illinois"
+    ]}); //Holds all univiersities
+
+    const [universities, setUniversities] = useState({array:[
+        "Washington University in St. Louis", "Harvard University", "Purdue University", "University of Urbana Champaign in Illinois"
+    ]}); //This will be modified as we add things to our search
+
+    //use Effect is causing the full list to render after each time we update the component in render, so the search isn't really doing anything
+    // useEffect(() => {
+
+    //     setAllUniversities({array:[
+    //         "Washington University in St. Louis", "Harvard University", "Purdue University", "University of Urbana Champaign in Illinois"
+    //     ]})
+
+    //     setUniversities({array:[
+    //         "Washington University in St. Louis", "Harvard University", "Purdue University", "University of Urbana Champaign in Illinois"
+    //     ]})
+    // })
+
+    let UniversityChips = [];
+
+    universities.array.forEach((uni)=> {
+        UniversityChips.push(<UniversityChip name={uni}/>);
+    })
+
 
     return (
         <div>
-            <Typography variant="h4">Find your university: </Typography>
+            <Typography variant="h4">Find your school: </Typography>
             <TextField  label="Input university here... " id="university-search" variant= "standard"
             onChange = { //Each time this text field is changed, onChange is called , and an event object is passed to the function
                 (event)=>{
-                    // //event.target.value is the value within this MUI object
-                    // const temp = info.password;
-                    // setInfo({username: event.target.value, password: temp});
+                    const search = event.target.value;
+
+                    let newUniversities = [];
+                    all_universities.array.forEach((uni)=> { //Changing our array to match what is being searched
+                        if (uni.includes(search)){
+                            newUniversities.push(uni);
+                        }
+                    })
+
+                    setUniversities({array:newUniversities})
                 }
             }/>
-            <UniversityChip name="Washington University in St. Louis"/>
+            {/* <UniversityChip name="Washington University in St. Louis"/> */}
+            {UniversityChips}
         </div>
        
     )
