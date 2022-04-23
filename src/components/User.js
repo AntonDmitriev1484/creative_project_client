@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import UniversitySearch from './UniversitySearch.js';
+
 import {current_courses, user_info, delete_course} from '../api-fetch/api-user.js'
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'; //Actually want to use this instead of a normal table
 
@@ -148,13 +150,17 @@ function User(props) {
                 <Typography variant="h4">Email: {userInfo.email}</Typography>
                 
                 <Card color = "primary" variant = "outlined">
-                    <Typography variant="h2">Your courses</Typography>
+                    <Typography variant="h2">Your Courses</Typography>
                     
                     <DataGrid 
                     columns={personal_cols} 
                     rows={personal_rows}
                     autoHeight = {true}
                     experimentalFeatures={{ newEditingApi: true }}/>
+                </Card>
+                <Card color = "primary" variant = "outlined">
+                    <Typography variant = "h2">Add Courses</Typography>
+                    <UniversitySearch/>
                 </Card>
 
             </Card>);
