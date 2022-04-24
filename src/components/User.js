@@ -49,25 +49,25 @@ function User(props) {
 
 
     //For the grid which shows what courses are offered by the university. course objects
-    const offerings_cols =[ //Defining the data grid's columns
-        {field: "course_name", headerName: "Course", width: "350"},
-        {
-        field: "course_code", 
-        headerName: "Course Code", 
-        width: "100"
-        },
-        {
-        field: "dept_code",
-        headerName: "Dept Code",
-        width: "100"
-        },
-        {
-        field: "official_description",
-        headerName: "Official Description",
-        width: "400",
+    // const offerings_cols =[ //Defining the data grid's columns
+    //     {field: "course_name", headerName: "Course", width: "350"},
+    //     {
+    //     field: "course_code", 
+    //     headerName: "Course Code", 
+    //     width: "100"
+    //     },
+    //     {
+    //     field: "dept_code",
+    //     headerName: "Dept Code",
+    //     width: "100"
+    //     },
+    //     {
+    //     field: "official_description",
+    //     headerName: "Official Description",
+    //     width: "400",
 
-        }
-    ]
+    //     }
+    // ]
 
     //For classes which the user has selected. pcourse objects
     const personal_cols = [
@@ -122,9 +122,21 @@ function User(props) {
     ]
 
 
+    const trigger_rerender = () => {
+        //This function will be passed through props all the way to University courses list
+        //where it'll be used to re-render this component in the backgroundl
 
+        console.log('in trigger rerender');
+        
+        const inner_username = user_info.username;
+        const inner_email = user_info.email;
 
-    console.log(userInfo);
+        const on_success_courses = (b) => {
+            setUserInfo({username:inner_username, email:inner_email, courses:b.courses})
+        }
+        
+        current_courses("", on_success_courses);
+    }
 
     let personal_rows = [];
 
@@ -160,7 +172,7 @@ function User(props) {
                 </Card>
                 <Card color = "primary" variant = "outlined">
                     <Typography variant = "h2">Add Courses</Typography>
-                    <UniversitySearch/>
+                    <UniversitySearch trigger_rerender={trigger_rerender}/>
                 </Card>
 
             </Card>);
