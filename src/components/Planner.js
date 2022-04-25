@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography'
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
 
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
@@ -16,6 +17,7 @@ import Tabs from '@mui/material/Tabs'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import Slider from '@mui/material/Slider'
 import AddHomework from './AddHomework.js'
 import CourseSelector from './CourseSelector.js'
 import {unresolved_events, current_courses, 
@@ -23,6 +25,7 @@ import {unresolved_events, current_courses,
 
 
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'; //Actually want to use this instead of a normal table
+import { PropaneRounded } from '@mui/icons-material';
 //https://mui.com/x/api/data-grid/data-grid/
 
 
@@ -101,8 +104,66 @@ function Planner () {
           type:'singleSelect',
         valueOptions:convert_courses_to_str},
 
-        {field: "progress", headerName: "Progress", width: "200", type:'slider', editable: true},
-        {field: "date_due", headerName: "Due", width: "100", editable: true}, //Note can set type:date https://mui.com/x/react-data-grid/columns/
+        {field: "progress", 
+        headerName: "Progress", 
+        width: "250",
+         type:'slider', 
+         editable: true,
+         renderCell: (props) => {
+
+            console.log(props);
+            return (
+                <Slider
+                    defaultValue={props.row.progress}
+                    // getAriaValueText={valuetext}
+                    valueLabelDisplay="auto"
+                    step={10}
+                    width="200"
+                    marks
+                    size="small"
+                    min={0}
+                    max={100}
+                    />
+                    // <Slider defaultValue={30} step={10} marks min={10} max={110} disabled />
+            );
+         },
+         renderEditCell: (props) => {
+            //const apiRef = useGridApiContext();
+            const { id, api, field, value } = props;
+
+            const handleChange = (event) => {
+                const newValue = event.target.value; 
+                props.api.setEditCellValue({ id, field, value: newValue });
+                // The new value entered by the user
+                //Since we're using a custom grid cell component, we need to
+                //define how it's value appears on the grid
+            };
+
+            return (
+                <Slider
+                    defaultValue={props.row.progress}
+                    // getAriaValueText={valuetext}
+                    valueLabelDisplay="auto"
+                    step={10}
+                    width="200"
+                    marks
+                    size="small"
+                    min={0}
+                    max={100}
+
+                    onChange={handleChange}
+                    />
+                    // <Slider defaultValue={30} step={10} marks min={10} max={110} disabled />
+            );
+          }
+
+        },
+        {field: "date_due", 
+        headerName: "Due", 
+        width: "200", 
+        type:'date', 
+        editable: true},
+
         {field: "note", headerName: "Note", width: "350", editable: true},
 
         {field: "actions", 
@@ -170,6 +231,11 @@ function Planner () {
                     }
 
                     let row_info = params.row;
+
+                    // console.log(row_info.date_due);
+                    // console.log(new Date(row_info.date_due).toISOString());
+                    const date_due_formatted = new Date(row_info.date_due).toISOString();
+                    //Conver the normal format date into an ISOString format before storage in our MongoDB database
 
                     let event = {
                         "date_time_created":"",
@@ -245,6 +311,7 @@ function Planner () {
                     }
 
                     let row_info = params.row;
+                    const date_due_formatted = new Date(row_info.date_due).toISOString();
 
                     let event = {
                         "_id":row_info.id,
@@ -307,6 +374,16 @@ function Planner () {
     unresolvedEvents.events?.forEach((event, index) => {
                 //console.log(index);
 
+                // const progress_slider = (<Slider
+                //     defaultValue={0}
+                //     // getAriaValueText={valuetext}
+                //     valueLabelDisplay="auto"
+                //     step={10}
+                //     marks
+                //     min={event.progress}
+                //     max={100}
+                //     />)
+
                 if (!event.new){
                     rows.push( {
                         new : false,
@@ -315,7 +392,7 @@ function Planner () {
                         description: event.description,
                         course_code: event.course.course.dept_code+""+event.course.course.course_code,
                         progress: event.progress,
-                        date_due: event.date_time_due,
+                        date_due: new Date(event.date_time_due).toLocaleDateString(),
                         note: event.note})
                 }
                 else {
@@ -326,7 +403,7 @@ function Planner () {
                         description: event.description,
                         course_code: event.course.course.dept_code+""+event.course.course.course_code,
                         progress: event.progress,
-                        date_due: event.date_time_due,
+                        date_due: new Date(event.date_time_due).toLocaleDateString(),
                         note: event.note})
                 }
             }
@@ -345,6 +422,8 @@ function Planner () {
 
     return (<div> <Typography variant="h1">Planner</Typography>
                 <DataGrid 
+                
+                    rowHeight = {100}
                     rows = {rows} 
                     editMode = "row"
                     columns = {cols} 
