@@ -34,10 +34,3 @@ function App(props) {
 }
 
 export default App;
-
-//I'll use export default for each React component since there will only be 1 component function per file
-
-//Possible creative portion things to say:
-// - University API of course offerings which you can add to your own
-// - 'Focus' days on homework, i.e. how I move homework between planner dates. Draggable (/can click to send them up or down) to acheive this
-// - Progress meters fill up and are percentage based rather than complete/incomplete

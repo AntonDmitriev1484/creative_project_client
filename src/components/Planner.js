@@ -368,81 +368,83 @@ function Planner () {
         let sorted_events = [...unresolvedEvents.events]; //Copies the state's events into this other array
 
 
-        console.log('pre sort '+ sorted_events);
+        console.log('pre sort ');
+
+        sorted_events.forEach((event)=> {
+            console.log(event);
+        })
+
         sorted_events.sort(
             (a,b)=> { 
-              let one = new Date(a.date_due);
-              let two = new Date(b.date_due);
+              let one = new Date(a.date_time_due);
+              let two = new Date(b.date_time_due);
               return one - two;
           });
 
-        console.log('post sort '+sorted_events)
+        console.log('post studio ');
+        sorted_events.forEach((event)=> {
+            console.log(event);
+        })
+
+        // const target = {_id: unresolvedEvents.events[params.row.index]._id}
+
+        let i = 0;
 
 
-        for (let i = 0; i<sorted_events.length-1; i++) {
+        console.log('length '+sorted_events.length);
+        while (i < sorted_events.length-1){
+
+            //Comparing NAN to NAN because the last element in the sorted array is always a blank column that we prep for the other view
+
+            console.log('out while '+i);
             let event = sorted_events[i];
-            let j = i;
             
             //Kind of works but is a bit buggy, the first place I would check is the indexing system used to map rows to state objects
 
             let split_rows = [];
 
+            // if (!(new Date(event.date_time_due).setHours(0,0,0) === new Date((sorted_events[i]).date_time_due).setHours(0,0,0))){
 
-            //Adds the first n-1 events to the rows
-            while (event.date_time_due === (sorted_events[i+1]).date_time_due){
+            // }
 
-                if (!event.new){
+
+            console.log(new Date(event.date_time_due).setHours(0,0,0) + ' '+new Date((sorted_events[i]).date_time_due).setHours(0,0,0))
+            while (new Date(event.date_time_due).setHours(0,0,0) === new Date((sorted_events[i]).date_time_due).setHours(0,0,0)){
+
+                console.log('in while '+i)
+
+                //if (!(sorted_events[i]).new){
                     split_rows.push( {
                         new : false,
                         index: i,
-                        id: event._id,
-                        description: event.description,
-                        course_code: event.course.course.dept_code+""+event.course.course.course_code,
-                        progress: event.progress,
-                        date_due: new Date(event.date_time_due).toLocaleDateString(),
-                        note: event.note})
-                }
-                else {
-                    split_rows.push( {
-                        new: true,
-                        index: i,
-                        id: event._id,
-                        description: event.description,
-                        course_code: event.course.course.dept_code+""+event.course.course.course_code,
-                        progress: event.progress,
-                        date_due: new Date(event.date_time_due).toLocaleDateString(),
-                        note: event.note})
-                        
-                    }
+                        id: (sorted_events[i])._id,
+                        description: (sorted_events[i]).description,
+                        course_code: (sorted_events[i]).course.course.dept_code+""+(sorted_events[i]).course.course.course_code,
+                        progress: (sorted_events[i]).progress,
+                        date_due: new Date((sorted_events[i]).date_time_due).toLocaleDateString(),
+                        note: (sorted_events[i]).note
+                    })
+                //}
+                // else {
+                //     split_rows.push( {
+                //         new: true,
+                //         index: i,
+                //         id: (sorted_events[i])._id,
+                //         description: (sorted_events[i]).description,
+                //         course_code: (sorted_events[i]).course.course.dept_code+""+(sorted_events[i]).course.course.course_code,
+                //         progress: (sorted_events[i]).progress,
+                //         date_due: new Date((sorted_events[i]).date_time_due).toLocaleDateString(),
+                //         note: (sorted_events[i]).note})
+                // }
                 
                 i++;
             }
 
-            //Adds the tail event to the list
-            if (!event.new){
-                split_rows.push( {
-                    new : false,
-                    index: i,
-                    id: event._id,
-                    description: event.description,
-                    course_code: event.course.course.dept_code+""+event.course.course.course_code,
-                    progress: event.progress,
-                    date_due: new Date(event.date_time_due).toLocaleDateString(),
-                    note: event.note})
-            }
-            else {
-                split_rows.push( {
-                    new: true,
-                    index: i,
-                    id: event._id,
-                    description: event.description,
-                    course_code: event.course.course.dept_code+""+event.course.course.course_code,
-                    progress: event.progress,
-                    date_due: new Date(event.date_time_due).toLocaleDateString(),
-                    note: event.note})
-            }
-            
+            // if (i == 6) {
+            //     i=7;
+            // }
 
+            
             view_component.push(
                 <Card>
                     <Typography> Date: {new Date(event.date_time_due).toLocaleDateString()} </Typography>
@@ -456,6 +458,34 @@ function Planner () {
                         />
                 </Card>
             )
+
+            // i++
+
+
+            // //Adds the tail event to the list
+            // if (!event.new){
+            //     split_rows.push( {
+            //         new : false,
+            //         index: i,
+            //         id: event._id,
+            //         description: event.description,
+            //         course_code: event.course.course.dept_code+""+event.course.course.course_code,
+            //         progress: event.progress,
+            //         date_due: new Date(event.date_time_due).toLocaleDateString(),
+            //         note: event.note})
+            // }
+            // else {
+            //     split_rows.push( {
+            //         new: true,
+            //         index: i,
+            //         id: event._id,
+            //         description: event.description,
+            //         course_code: event.course.course.dept_code+""+event.course.course.course_code,
+            //         progress: event.progress,
+            //         date_due: new Date(event.date_time_due).toLocaleDateString(),
+            //         note: event.note})
+            // }
+        
         }
 
 
