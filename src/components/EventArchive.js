@@ -49,11 +49,18 @@ function EventArchive() {
     let archived_event_components = [];
 
     archivedEvents.archived.forEach((event) => {
+        let date_time_archived = "";
+        if (event.date_time_archived !== null){ //For testing, since I have some events made before I added a date_time_archived feature
+                date_time_archived = event.date_time_archived;
+        }
         archived_event_components.push(
+
+            
             <ArchivedEvent
              description = {event.description} 
              course_code = {event.course.course.dept_code+""+event.course.course.course_code}
-             note = {event.note}/>
+             note = {event.note}
+             date = {date_time_archived}/>
         )
     })
 
