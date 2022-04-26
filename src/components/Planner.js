@@ -34,37 +34,19 @@ import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'; //Actually wan
 //https://mui.com/x/api/data-grid/data-grid/
 
 
-//Sample event json
-
-// {"date_time_created":"2022-04-13T02:28:15.108Z",
-// "date_time_assigned":"2022-04-13T02:28:15.108Z",
-// "date_time_due":"2022-04-13T02:28:15.108Z",
-// "progress":0,
-// "description":"Test homework add ARC",
-// "note":"I hate JS",
-// "course":{
-//     "course":{"name":"Rapid Prototype Development",
-//             "dept_name":"Computer Science",
-//             "dept_code":"CSE",
-//             "course_code":"330S",
-//             "_id":"625799063724762d6bde1e51"},
-//             "tags":[],
-//             "description":"On the struggle bus with this class rn",
-//             "note":"A note",
-//             "semester_taken":4,
-//             "_id":"625799063724762d6bde1e50"},
-// "_id":"625799063724762d6bde1e4f"}
-
 function Planner () {
     const [unresolvedEvents, setUnresolvedEvents] = useState({events:[]});
     const [courses, setCourses] = useState({});
+
+    const [split_view, setSplitView] = useState(false);
+
+
 
     const convert_courses_to_str = () => {
         //return courses.map((course)=>(course.course.dept_code+course.course.course_code))
         return courses.map((course)=>(course.course.course_code))
     }
 
-    const component = <Button/>;
 
     
     useEffect( () => {
@@ -372,30 +354,47 @@ function Planner () {
         
         }
 
-
-
     ];
 
 
-    let rows = [];
-    //Says: if unresolvedEvents.events exists, then run forEach
-    unresolvedEvents.events?.forEach((event, index) => {
-                //console.log(index);
 
-                // const progress_slider = (<Slider
-                //     defaultValue={0}
-                //     // getAriaValueText={valuetext}
-                //     valueLabelDisplay="auto"
-                //     step={10}
-                //     marks
-                //     min={event.progress}
-                //     max={100}
-                //     />)
+    let rows = [];
+    let view_component = []; //Will either be an array of multiple data tables and text, or will just be one main data grid
+   
+    if (split_view){
+
+        //First it'll be helpful to sort by date
+
+        let sorted_events = [...unresolvedEvents.events]; //Copies the state's events into this other array
+
+
+        console.log('pre sort '+ sorted_events);
+        sorted_events.sort(
+            (a,b)=> { 
+              let one = new Date(a.date_due);
+              let two = new Date(b.date_due);
+              return one - two;
+          });
+
+        console.log('post sort '+sorted_events)
+
+
+        for (let i = 0; i<sorted_events.length-1; i++) {
+            let event = sorted_events[i];
+            let j = i;
+            
+            //Kind of works but is a bit buggy, the first place I would check is the indexing system used to map rows to state objects
+
+            let split_rows = [];
+
+
+            //Adds the first n-1 events to the rows
+            while (event.date_time_due === (sorted_events[i+1]).date_time_due){
 
                 if (!event.new){
-                    rows.push( {
+                    split_rows.push( {
                         new : false,
-                        index: index,
+                        index: i,
                         id: event._id,
                         description: event.description,
                         course_code: event.course.course.dept_code+""+event.course.course.course_code,
@@ -404,26 +403,105 @@ function Planner () {
                         note: event.note})
                 }
                 else {
-                    rows.push( {
+                    split_rows.push( {
                         new: true,
-                        index: index,
+                        index: i,
                         id: event._id,
                         description: event.description,
                         course_code: event.course.course.dept_code+""+event.course.course.course_code,
                         progress: event.progress,
                         date_due: new Date(event.date_time_due).toLocaleDateString(),
                         note: event.note})
+                        
+                    }
+                
+                i++;
+            }
+
+            //Adds the tail event to the list
+            if (!event.new){
+                split_rows.push( {
+                    new : false,
+                    index: i,
+                    id: event._id,
+                    description: event.description,
+                    course_code: event.course.course.dept_code+""+event.course.course.course_code,
+                    progress: event.progress,
+                    date_due: new Date(event.date_time_due).toLocaleDateString(),
+                    note: event.note})
+            }
+            else {
+                split_rows.push( {
+                    new: true,
+                    index: i,
+                    id: event._id,
+                    description: event.description,
+                    course_code: event.course.course.dept_code+""+event.course.course.course_code,
+                    progress: event.progress,
+                    date_due: new Date(event.date_time_due).toLocaleDateString(),
+                    note: event.note})
+            }
+            
+
+            view_component.push(
+                <Card>
+                    <Typography> Date: {new Date(event.date_time_due).toLocaleDateString()} </Typography>
+                        <DataGrid 
+                        rowHeight = {100}
+                        rows = {split_rows} 
+                        editMode = "row"
+                        columns = {cols} 
+                        autoHeight = {true}
+                        experimentalFeatures={{ newEditingApi: true }}
+                        />
+                </Card>
+            )
+        }
+
+
+    }
+    else {
+
+        //let rows = [];
+
+     //Says: if unresolvedEvents.events exists, then run forEach
+     unresolvedEvents.events?.forEach((event, index) => {
+
+        if (!event.new){
+            rows.push( {
+                new : false,
+                index: index,
+                id: event._id,
+                description: event.description,
+                course_code: event.course.course.dept_code+""+event.course.course.course_code,
+                progress: event.progress,
+                date_due: new Date(event.date_time_due).toLocaleDateString(),
+                note: event.note})
+        }
+        else {
+            rows.push( {
+                new: true,
+                index: index,
+                id: event._id,
+                description: event.description,
+                course_code: event.course.course.dept_code+""+event.course.course.course_code,
+                progress: event.progress,
+                date_due: new Date(event.date_time_due).toLocaleDateString(),
+                note: event.note})
                 }
             }
         );
 
-    //Might edit events through a pop-up window, include an edit button in each row
-    //Might delete events through a delete button in each row
-
-    //Most pressing concern is figuring out how to include full course information on each element of course_selector and then access that.
-
-    let row_component_array = [];
-
+        view_component = (<DataGrid 
+            rowHeight = {100}
+            rows = {rows} 
+            editMode = "row"
+            columns = {cols} 
+            autoHeight = {true}
+            experimentalFeatures={{ newEditingApi: true }}
+            />);
+    }
+   
 
     const trigger_rerender = () => {
         //This function will be passed through props all the way to the restore button for each archived event
@@ -452,15 +530,23 @@ function Planner () {
 
 
     return (<div> <Typography variant="h1">Planner</Typography>
-                <DataGrid 
-                
+
+                <Button onClick = {
+                    (event) => {
+                        setSplitView(!split_view);
+                    }
+                }>Switch View</Button>
+
+
+                {view_component}
+                {/* <DataGrid 
                     rowHeight = {100}
                     rows = {rows} 
                     editMode = "row"
                     columns = {cols} 
                     autoHeight = {true}
                     experimentalFeatures={{ newEditingApi: true }}
-                    />
+                    /> */}
 
                 <Accordion TransitionProps={{ unmountOnExit: true }}>
                     <AccordionSummary
