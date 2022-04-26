@@ -10,6 +10,8 @@ import Button from '@mui/material/Button';
 
 import {login} from '../api-fetch/api-user.js'
 
+import {archived_events} from '../api-fetch/api-user.js'
+
 function Login(props) {
 
     const [info, setInfo] = useState({username:"", password:""});
@@ -52,6 +54,14 @@ function Login(props) {
                                 }
                                
                                 login(info, on_success);
+
+
+                                // const on_success_t = (a) => {
+                                //     console.log(a);
+                                // }
+
+                                // archived_events("",on_success_t)
+                                
                                 }
                             } >Enter</Button>
 

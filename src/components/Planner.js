@@ -18,6 +18,11 @@ import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Slider from '@mui/material/Slider'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import EventArchive from './EventArchive.js'
 import AddHomework from './AddHomework.js'
 import CourseSelector from './CourseSelector.js'
 import {unresolved_events, current_courses, 
@@ -25,7 +30,7 @@ import {unresolved_events, current_courses,
 
 
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'; //Actually want to use this instead of a normal table
-import { PropaneRounded } from '@mui/icons-material';
+
 //https://mui.com/x/api/data-grid/data-grid/
 
 
@@ -138,6 +143,9 @@ function Planner () {
                 //Since we're using a custom grid cell component, we need to
                 //define how it's value appears on the grid
             };
+
+            //https://mui.com/x/react-data-grid/editing/#column-with-valuegetter
+            //https://codesandbox.io/s/data-grid-set-cell-value-issue-example-forked-or3rw?file=/src/Demo.tsx
 
             return (
                 <Slider
@@ -321,9 +329,9 @@ function Planner () {
                         "progress":row_info.progress,
                         "description":row_info.description,
                         "note":row_info.note,
-                        "course":{
-                            
-                        }
+                        "course":"",
+                        // "course":{
+                        // }
                     }
 
                     //WARNING: DISGUSTINGLY BAD CODE
@@ -430,9 +438,21 @@ function Planner () {
                     autoHeight = {true}
                     experimentalFeatures={{ newEditingApi: true }}
                     />
-                {/* <Card color = "primary" variant = "outlined">
-                    <AddHomework/>
-                </Card> */}
+
+                <Accordion TransitionProps={{ unmountOnExit: true }}>
+                    <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                    >
+                    <Typography>See your archived events</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                            <EventArchive/>
+                    </AccordionDetails>
+                </Accordion>
+                
+             
             </div>);
 }
 
