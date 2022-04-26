@@ -425,8 +425,31 @@ function Planner () {
     let row_component_array = [];
 
 
-    // return (<div> <Typography variant="h1">User</Typography>
-    // <Typography variant="h4">Events: {unresolvedEvents.events.toString()}</Typography></div>);
+    const trigger_rerender = () => {
+        //This function will be passed through props all the way to the restore button for each archived event
+        //where it'll be used to re-render this component in the background
+        
+        const on_success_events = (a) => {
+            a.events?.push({ //pushes back a blank event
+                "new":true, //New "flag" is set to true
+                "_id":"0", //BE CAREFUL ABOUT THIS IT MIGHT CAUSE BUGS WHEN SENT TO DB
+                "date_time_due":"",
+                "progress":0,
+                "description":"",
+                "note":"",
+                "course":{
+                    "course":{
+                        "dept_code":"",
+                        "course_code":""
+                    },
+                }
+            }); //Pushes an extra item back into the array, this will be our way to add new events
+            setUnresolvedEvents({events:a.events});
+        }
+
+         unresolved_events("", on_success_events);
+    }
+
 
     return (<div> <Typography variant="h1">Planner</Typography>
                 <DataGrid 
@@ -448,7 +471,7 @@ function Planner () {
                     <Typography>See your archived events</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                            <EventArchive/>
+                            <EventArchive rerender_planner = {trigger_rerender}/>
                     </AccordionDetails>
                 </Accordion>
                 

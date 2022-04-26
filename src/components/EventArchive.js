@@ -28,7 +28,7 @@ import {archived_events} from '../api-fetch/api-user.js'
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'; //Actually want to use this instead of a normal table
 
 
-function EventArchive() {
+function EventArchive(props) {
 
     const [archivedEvents, setArchivedEvents] = useState({archived:[]})
 
@@ -48,6 +48,20 @@ function EventArchive() {
 
     let archived_event_components = [];
 
+    const trigger_rerender = () => {
+        //This function will be passed through props all the way to the restore button for each archived event
+        //where it'll be used to re-render this component in the background
+        
+        const on_success = (a) => {
+            
+            setArchivedEvents({archived:a.events});
+        }
+
+        archived_events("",on_success);
+    }
+
+    
+
     archivedEvents.archived.forEach((event) => {
         let date_time_archived = "";
         if (event.date_time_archived !== null){ //For testing, since I have some events made before I added a date_time_archived feature
@@ -60,7 +74,10 @@ function EventArchive() {
              description = {event.description} 
              course_code = {event.course.course.dept_code+""+event.course.course.course_code}
              note = {event.note}
-             date = {date_time_archived}/>
+             date = {date_time_archived}
+             event_id = {event._id}
+             rerender_planner = {props.rerender_planner}
+             rerender_archive = {trigger_rerender}/>
         )
     })
 

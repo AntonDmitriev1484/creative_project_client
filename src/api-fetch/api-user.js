@@ -43,6 +43,10 @@ function archived_events(param, on_success) {
     return generic_fetch("/user/"+get_username()+"/archive", "GET", param, on_success);
 }
 
+function restore_archived_event(param, on_success) {
+    return generic_fetch("/user/"+get_username()+"/archive", "POST", param, on_success);
+}
+
 
 //Courses fetch
 
@@ -172,5 +176,5 @@ export {
     add_course, delete_course, update_course, current_courses,
     user_info, update_userinfo, delete_user,
     define_university, university_courselist,
-    get_username, clear_username, archived_events
+    get_username, clear_username, archived_events, restore_archived_event
 }
