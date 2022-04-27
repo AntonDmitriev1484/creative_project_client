@@ -247,7 +247,7 @@ function Planner () {
                     //that we get as a string from the singleSelect
 
                     courses.forEach( (course) => {
-                        console.log('state course code '+course.course.course_code+' singleSelect course code '+params.row.course_code);
+                        //console.log('state course code '+course.course.course_code+' singleSelect course code '+params.row.course_code);
                         if (course.course.course_code === row_info.course_code){
                             
                             event.course = course;
@@ -300,6 +300,8 @@ function Planner () {
 
                     }
 
+                    //row.event.course
+
                     let row_info = params.row;
                     const date_due_formatted = new Date(row_info.date_due).toISOString();
 
@@ -324,7 +326,7 @@ function Planner () {
                     //that we get as a string from the singleSelect
 
                     courses.forEach( (course) => {
-                        console.log('state course code '+course.course.course_code+' singleSelect course code '+params.row.course_code);
+                        //console.log('state course code '+course.course.course_code+' singleSelect course code '+params.row.course_code);
                         if (course.course.course_code === row_info.course_code){
                             
                             event.course = course;
@@ -338,10 +340,6 @@ function Planner () {
                     event.date_time_assigned = event.date_time_created;
 
                     //Adding date time created and assigned properties
-
-                    console.log(event);
-
-                    //I THINK THIS IS FINE, API UPDATE EVENT METHOD IS RETURNING SUCCESS WITHOUT ACTUALLY UPDATING EVENT
 
                     update_event(event, on_success);
                     //console.log(unresolvedEvents.events[params.row.index]);
@@ -368,12 +366,6 @@ function Planner () {
         let sorted_events = [...unresolvedEvents.events]; //Copies the state's events into this other array
 
 
-        console.log('pre sort ');
-
-        sorted_events.forEach((event)=> {
-            console.log(event);
-        })
-
         sorted_events.sort(
             (a,b)=> { 
               let one = new Date(a.date_time_due);
@@ -381,10 +373,6 @@ function Planner () {
               return one - two;
           });
 
-        console.log('post studio ');
-        sorted_events.forEach((event)=> {
-            console.log(event);
-        })
 
         // const target = {_id: unresolvedEvents.events[params.row.index]._id}
 
@@ -415,6 +403,7 @@ function Planner () {
 
                 //if (!(sorted_events[i]).new){
                     split_rows.push( {
+                        event: sorted_events[i],
                         new : false,
                         index: i,
                         id: (sorted_events[i])._id,
@@ -447,7 +436,7 @@ function Planner () {
             
             view_component.push(
                 <Card>
-                    <Typography> Date: {new Date(event.date_time_due).toLocaleDateString()} </Typography>
+                    <Typography variant = "h3"> {new Date(event.date_time_due).toLocaleDateString()} </Typography>
                         <DataGrid 
                         rowHeight = {100}
                         rows = {split_rows} 
@@ -499,6 +488,7 @@ function Planner () {
 
         if (!event.new){
             rows.push( {
+                event: event,
                 new : false,
                 index: index,
                 id: event._id,
@@ -510,6 +500,7 @@ function Planner () {
         }
         else {
             rows.push( {
+                event: event,
                 new: true,
                 index: index,
                 id: event._id,

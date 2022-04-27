@@ -10,15 +10,6 @@ import Button from '@mui/material/Button';
 //import Typography from '@material-ui/core/Typography'
 
 
-// const useStyles = makeStyles(theme => ({
-//     // card: {
-//     //     maxWidth: 600,
-//     //     margin: 'auto',
-//     //     marginTop: theme.spacing(5),
-//     //     color: theme.palette.primary
-//     // },
-// }))
-
 function Test_component(props) {
 
     //const classes = useStyles(useTheme());
